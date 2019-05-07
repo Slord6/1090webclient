@@ -1,0 +1,20 @@
+#planeMap {
+    height: 100%;
+}
+
+.infoText {
+    padding: 4px;
+    min-width: 150px;
+    background-color: black;
+    color: white;
+    font-family: "Lucida Console", Monaco, monospace;
+    opacity: 0;
+}
+
+.infoText a {
+    color: blanchedalmond;
+}
+
+.infoPanel:hover .infoText, .infoText:hover {
+    opacity: 1;
+}
