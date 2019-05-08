@@ -32,17 +32,17 @@ let getNewData = (cb) => {
  */
 let planeToInfoPanel = (plane) => {
     if (plane.seen > planeTimeout - 10) return 'Lost'; // 10 seconds before removal, flag as being lost
-    let infoPanel = '{' + plane.lat.toFixed(4) + ',' + plane.lon.toFixed(4) + '}';
+    let infoPanel = '{' + plane.lat.toFixed(4) + ',' + plane.lon.toFixed(4) + '}<br>';
     if(plane.altitude){
-        infoPanel += ' Alt: ' + plane.altitude
+        infoPanel += ' Alt: ' + plane.altitude + 'ft<br>';
     }
     if(plane.validtrack) {
-        infoPanel += ' Hdg: ' + plane.track;
+        infoPanel += ' Hdg: ' + plane.track + '°<br>';
     }
     if(plane.speed) {
-        infoPanel += ' Spd: ' + plane.speed;
+        infoPanel += ' Spd: ' + plane.speed + 'kts<br>';
     }
-    infoPanel += '<br>Last seen ' + plane.seen + 's ago';
+    infoPanel += 'Last seen ' + plane.seen + 's ago';
     if(plane.flight) {
         infoPanel += '<br>'
         infoPanel += plane.flight.trim();
