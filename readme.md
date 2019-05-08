@@ -11,7 +11,7 @@ A web client for plane spotting
 
 A replacement client for [dump1090](https://github.com/MalcolmRobb/dump1090) .
 Super, super simple (plain js/css/html) dump1090 web client using [Leaflet](https://leafletjs.com/) for maps.
-Currently setup to use open street maps for map tiles but any leaflet-supported map tile service should work.
+Currently setup to use open street maps for map tiles but any leaflet-supported map tile service should work (See the list of [tile servers](https://wiki.openstreetmap.org/wiki/Tile_servers)).
 
 Note: This is not 'production-ready' code - it works, but its also, for example, consuming the server's data as HTML in places - don't just throw this on the internet if you don't know what you're doing
 
