@@ -88,16 +88,35 @@ let updateMap = () => {
         if(!http.responseText) return;
         let newPlanes = JSON.parse(http.responseText);
         // Add/update with returned planes
-        newPlanes.forEach(plane => {
-            if(!activePlanes[plane.hex]) {
-                plane.new = true;
-                plane.firstSeen = Date.now();
+        newPlanes.forEach(newPlane => {
+            if(!activePlanes[newPlane.hex]) {
+                newPlane.new = true;
+                newPlane.firstSeen = Date.now();
             } else {
-                plane.new = false;
-                plane.firstSeen = activePlanes[plane.hex].firstSeen;
+                newPlane.new = false;
+                let storedPlane = activePlanes[newPlane.hex];
+                newPlane.firstSeen = storedPlane.firstSeen;
+                if(!newPlane.validposition) {
+                    newPlane.lat = storedPlane.lat;
+                    newPlane.lon = storedPlane.lon;
+                    newPlane.validposition = storedPlane.validposition;
+                }
+                if(!newPlane.validtrack) {
+                    newPlane.track = storedPlane.track;
+                    newPlane.validtrack = newPlane.validtrack;
+                }
+                if(!newPlane.altitude) {
+                    newPlane.altitude = storedPlane.altitude;
+                }
+                if(!newPlane.flight) {
+                    newPlane.flight = storedPlane.flight;
+                }
+                if(!newPlane.speed) {
+                    newPlane.speed = storedPlane.speed;
+                }
             }
             // Add or override
-            activePlanes[plane.hex] = plane;
+            activePlanes[newPlane.hex] = newPlane;
         });
         // Remove out of date planes
         Object.values(newPlanes).forEach((plane, index) => {
