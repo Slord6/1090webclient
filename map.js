@@ -5,10 +5,15 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(planeMap);
 var markers = L.layerGroup().addTo(planeMap);
 
+// Heatmap setup
+var heat = L.heatLayer([]).addTo(planeMap);
+// On/off toggle for heatmap
+var heatMapActive = true;
+
 // Time between data fetches in seconds
-let dataFetchBreakTime = 3;
+let dataFetchBreakTime = 1;
 // How long to wait until we remove planes from the map (seconds)
-let planeTimeout = 120;
+let planeTimeout = 60;
 // In-mem plane storage
 let activePlanes = {};
 
@@ -75,9 +80,23 @@ let updateMap = () => {
                     })
                 });
                 markers.addLayer(newMarker).addTo(planeMap);
+
+                updateHeatmapLayer(plane);
             }
         });
     };
+    /**
+     * Update the heatmap with the location of a plane
+     * Assumes valid coordinates
+     * Ignores if plane has not been seen in 
+     * @param {*} plane 
+     */
+    let updateHeatmapLayer = (plane) => {
+        // Add heatmap markers for recent positions
+        if(heatMapActive && plane.seen < dataFetchBreakTime + 1) {
+            heat.addLatLng([plane.lat, plane.lon]);
+        }
+    }
     /**
      * Used as callback for getNewData
      * Updates our in-mem plane repository including removing old planes
