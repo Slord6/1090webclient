@@ -6,18 +6,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var markers = L.layerGroup().addTo(planeMap);
 
 // Heatmap setup
-var heat = L.heatLayer([]).addTo(planeMap),
-    draw = true;
-
-// planeMap.on({
-//     movestart: function () { draw = false; },
-//     moveend:   function () { draw = true; },
-//     mousemove: function (e) {
-//         if (draw) {
-//             heat.addLatLng(e.latlng);
-//         }
-//     }
-// })
+var heat = L.heatLayer([]).addTo(planeMap);
+// On/off toggle for heatmap
+var heatMapActive = true;
 
 // Time between data fetches in seconds
 let dataFetchBreakTime = 1;
@@ -90,14 +81,22 @@ let updateMap = () => {
                 });
                 markers.addLayer(newMarker).addTo(planeMap);
 
-                // Add heatmap markers for recent positions
-                if(plane.seen < dataFetchBreakTime + 1) {
-                    console.log('heatmap loc', plane.lat, plane.lon);
-                    heat.addLatLng([plane.lat, plane.lon]);
-                }
+                updateHeatmapLayer(plane);
             }
         });
     };
+    /**
+     * Update the heatmap with the location of a plane
+     * Assumes valid coordinates
+     * Ignores if plane has not been seen in 
+     * @param {*} plane 
+     */
+    let updateHeatmapLayer = (plane) => {
+        // Add heatmap markers for recent positions
+        if(heatMapActive && plane.seen < dataFetchBreakTime + 1) {
+            heat.addLatLng([plane.lat, plane.lon]);
+        }
+    }
     /**
      * Used as callback for getNewData
      * Updates our in-mem plane repository including removing old planes
