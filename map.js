@@ -8,6 +8,10 @@ var markers = L.layerGroup().addTo(planeMap);
 // Heatmap setup
 var heat = L.heatLayer([]).addTo(planeMap);
 
+let addPlanePath = (plane) => {
+    plane.path = L.polyline([], {color: 'black'}).addTo(planeMap);
+}
+
 // === End map setup ===
 
 // === Settings ===
@@ -26,6 +30,9 @@ var heatMapActive = true;
  * @param {*} plane 
  */
 let removePlane = (plane) => {
+    if(plane.path) {
+        planeMap.removeLayer(plane.path);
+    }
     delete activePlanes[plane.hex];
 }
 
@@ -80,12 +87,10 @@ let updateMap = () => {
         // clear map markers
         markers.clearLayers();
         Object.values(activePlanes).forEach(plane => {
-            if(plane.new) {
-                console.log('New plane!', plane.hex, plane.flight, plane.validposition ? 'with position' : 'no position', plane.firstSeen);
-            }
             if(plane.validposition) {       
                 addPlaneMarker(plane);
                 updateHeatmapLayer(plane);
+                addPathMarker(plane);
             }
         });
     };
@@ -111,10 +116,16 @@ let updateMap = () => {
             className: 'infoPanel',
             html: '<img style="transform: rotate(' + plane.track + 'deg)" src="./media/plane_black.png"/>' +
                   '<div class="infoText">' + planeToInfoPanel(plane) + '</div>'
-        })
-    });
-    markers.addLayer(newMarker).addTo(planeMap);
+            })
+        });
+        markers.addLayer(newMarker).addTo(planeMap);
     }
+    let addPathMarker = (plane) => {
+        if(!plane.path) {
+            addPlanePath(plane);
+        }
+        plane.path.addLatLng(L.latLng(plane.lat, plane.lon));
+    };
     /**
      * Used as callback for getNewData
      * Updates our in-mem plane repository including removing old planes
@@ -151,6 +162,7 @@ let updateMap = () => {
                 if(!newPlane.speed) {
                     newPlane.speed = storedPlane.speed;
                 }
+                newPlane.path = storedPlane.path;
             }
             // Add or override
             activePlanes[newPlane.hex] = newPlane;
