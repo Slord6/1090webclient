@@ -1,12 +1,15 @@
+// public events for current planes
+window.planeAnnouncements = [];
+
 // === Leaflet map setup ===
-var planeMap = L.map('planeMap').setView([50.27, -3.70], 8);
+let planeMap = L.map('planeMap').setView([50.27, -3.70], 8);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(planeMap);
-var markers = L.layerGroup().addTo(planeMap);
+let markers = L.layerGroup().addTo(planeMap);
 
 // Heatmap setup
-var heat = L.heatLayer([]).addTo(planeMap);
+let heat = L.heatLayer([]).addTo(planeMap);
 
 let addPlanePath = (plane) => {
     plane.path = L.polyline([], {color: 'black'}).addTo(planeMap);
@@ -22,7 +25,7 @@ let planeTimeout = 60;
 // In-mem plane storage
 let activePlanes = {};
 // On/off toggle for heatmap
-var heatMapActive = true;
+let heatMapActive = true;
 // === End Settings
 
 /**
@@ -42,7 +45,7 @@ let removePlane = (plane) => {
  */
 let getNewData = (cb) => {
     const Http = new XMLHttpRequest();
-    const url='http://192.168.0.38:8080/dump1090/data.json'; // dump1090 server
+    const url='http://192.168.1.116:8080/dump1090/data.json'; // dump1090 server
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange=(res) => {
@@ -74,6 +77,10 @@ let planeToInfoPanel = (plane) => {
     }
     return infoPanel;
 }
+
+let announceCurrentPlanes = () => {
+    window.planeAnnouncements.forEach(cb => cb(activePlanes));
+};
 
 /**
  * Call this once to trigger the map continuous update
@@ -167,6 +174,8 @@ let updateMap = () => {
             // Add or override
             activePlanes[newPlane.hex] = newPlane;
         });
+        // include out of date planes in our update
+        announceCurrentPlanes();
         // Remove out of date planes
         Object.values(newPlanes).forEach((plane, index) => {
             if(plane.seen > planeTimeout){
