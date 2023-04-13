@@ -24,7 +24,7 @@ Hover over a plane on the map for more info.
 
 ## FAQ
 ### Cross-Origin Errors
-Depending on the version of [dump1090](https://github.com/MalcolmRobb/dump1090) you have and your setup, there might be a slight modification you need to make in order not to get cross-origin errors.
+Depending on the version of [dump1090](https://github.com/MalcolmRobb/dump1090) you have and your setup, there might be a slight modification you need to make in order not to get cross-origin errors. (Or you can install my [fork](https://github.com/Slord6/dump1090), where I did this already but it's not too hard to do)
 
 I've tried to write the following instructions so someone who's never written code in their life can fix it, but if you have problems feel free to open an issue and I'll try and help you out.
 
